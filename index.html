@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belarmino Auto Peças - Sistema Integrado</title>
+    <style>
+        /* DESIGN GERAL (CSS) */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; color: #1e293b; margin: 0; padding: 20px; }
+        .navbar { background: #334155; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px; color: white; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .navbar h1 { margin: 0; font-size: 24px; }
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-left: 5px solid #0f172a; }
+        .card.caixa { border-left-color: #10b981; }
+        .card.clientes { border-left-color: #3b82f6; }
+        .card h3 { margin: 0 0 10px 0; font-size: 14px; color: #64748b; text-transform: uppercase; }
+        .card p { margin: 0; font-size: 24px; font-weight: bold; }
+        
+        .grid-secoes { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; }
+        .secao { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        .secao h2 { margin-top: 0; color: #334155; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; font-size: 18px; }
+        
+        /* TABELAS */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+        th { background-color: #f1f5f9; color: #475569; font-weight: 600; }
+        
+        /* FORMULÁRIOS e BOTÕES */
+        .form-grupo { margin-bottom: 15px; display: flex; flex-direction: column; }
+        .form-grupo label { font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #475569; }
+        .form-grupo input, .form-grupo select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; }
+        button { background: #0f172a; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; font-size: 14px; transition: background 0.2s; }
+        button:hover { background: #334155; }
+        .btn-venda { background: #10b981; margin-top: 10px; }
+        .btn-venda:hover { background: #059669; }
+    </style>
+</head>
+<body>
+
+    <!-- CABEÇALHO -->
+    <div class="navbar">
+        <h1>🛠️ Belarmino Auto Peças</h1>
+        <div>Painel Administrativo Pro</div>
+    </div>
+
+    <!-- INDICADORES RÁPIDOS -->
+    <div class="dashboard">
+        <div class="card">
+            <h3>Total em Estoque</h3>
+            <p id="indicador-estoque">3 Itens</p>
+        </div>
+        <div class="card caixa">
+            <h3>Caixa do Dia</h3>
+            <p id="indicador-caixa">R$ 0,00</p>
+        </div>
+        <div class="card clientes">
+            <h3>Clientes Atendidos</h3>
+            <p id="indicador-clientes">0</p>
+        </div>
+    </div>
+
+    <!-- ÁREA DE OPERAÇÕES -->
+    <div class="grid-secoes">
+        
+        <!-- COLUNA ESQUERDA: LISTAGENS -->
+        <div>
+            <!-- TABELA DE ESTOQUE -->
+            <div class="secao">
+                <h2>📦 Controle de Estoque e Valores</h2>
+                <table id="tabela-estoque">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Item / Descrição</th>
+                            <th>Qtd</th>
+                            <th>Preço Custo</th>
+                            <th>Preço Venda</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1020-B</td><td>Pastilha de Freio Bosch</td><td>10</td><td>R$ 45,00</td><td>R$ 89,90</td></tr>
+                        <tr><td>PH6017</td><td>Filtro de Óleo Fram</td><td>25</td><td>R$ 15,00</td><td>R$ 35,00</td></tr>
+                        <tr><td>AM-322</td><td>Amortecedor Cofap (Par)</td><td>6</td><td>R$ 180,00</td><td>R$ 340,00</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- REGISTRO DE VENDAS / FLUXO DE CAIXA -->
+            <div class="secao">
+                <h2>💰 Histórico de Vendas e Caixa</h2>
+                <table id="tabela-caixa">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Peça Vendida</th>
+                            <th>Qtd</th>
+                            <th>Total Recebido</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- As vendas realizadas vão aparecer aqui -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- COLUNA DIREITA: CADASTROS E LANÇAMENTOS -->
+        <div>
+            <!-- LANÇAR VENDA (PDV) -->
+            <div class="secao">
+                <h2>🛒 Lançar Nova Venda</h2>
+                <div class="form-grupo">
+                    <label>Nome do Cliente</label>
+                    <input type="text" id="venda-cliente" placeholder="Ex: João Silva">
+                </div>
+                <div class="form-grupo">
+                    <label>Selecionar Peça</label>
+                    <select id="venda-peca">
+                        <option value="89.90|Pastilha de Freio Bosch">Pastilha de Freio Bosch (R$ 89,90)</option>
+                        <option value="35.00|Filtro de Óleo Fram">Filtro de Óleo Fram (R$ 35,00)</option>
+                        <option value="340.00|Amortecedor Cofap (Par)">Amortecedor Cofap (Par) (R$ 340,00)</option>
+                    </select>
+                </div>
+                <div class="form-grupo">
+                    <label>Quantidade</label>
+                    <input type="number" id="venda-qtd" value="1" min="1">
+                </div>
+                <button class="btn-venda" onclick="registrarVenda()">Finalizar Venda</button>
+            </div>
+
+            <!-- CADASTRO DE PEÇAS -->
+            <div class="secao">
+                <h2>➕ Cadastrar Nova Peça</h2>
+                <div class="form-grupo">
+                    <label>Código da Peça</label>
+                    <input type="text" id="cad-codigo" placeholder="Ex: AC-400">
+                </div>
+                <div class="form-grupo">
+                    <label>Nome / Descrição</label>
+                    <input type="text" id="cad-nome" placeholder="Ex: Correia Dentada Gates">
+                </div>
+                <div class="form-grupo">
+                    <label>Quantidade Inicial</label>
+                    <input type="number" id="cad-qtd" placeholder="0">
+                </div>
+                <div class="form-grupo">
+                    <label>Preço de Custo (R$)</label>
+                    <input type="number" id="cad-custo" step="0.01" placeholder="0.00">
+                </div>
+                <div class="form-grupo">
+                    <label>Preço de Venda (R$)</label>
+                    <input type="number" id="cad-venda" step="0.01" placeholder="0.00">
+                </div>
+                <button onclick="cadastrarPeca()">Adicionar ao Estoque</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- INTELIGÊNCIA DO SISTEMA (JAVASCRIPT) -->
+    <script>
+        let totalCaixa = 0;
+        let totalClientes = 0;
+        let totalItensEstoque = 3;
+
+        // Função para Processar e Registrar Vendas
+        function registrarVenda() {
+            const cliente = document.getElementById('venda-cliente').value.trim();
+            const pecaInfo = document.getElementById('venda-peca').value.split('|');
+            const qtd = parseInt(document.getElementById('venda-qtd').value);
+
+            if (cliente === "") {
+                alert("Por favor, digite o nome do cliente.");
+                return;
+            }
+
+            const precoUnitario = parseFloat(pecaInfo[0]);
+            const nomePeca = pecaInfo[1];
+            const valorTotalVenda = precoUnitario * qtd;
+
+            // Atualiza Caixa e Indicadores
+            totalCaixa += valorTotalVenda;
+            totalClientes += 1;
+
+            document.getElementById('indicador-caixa').innerText = `R$ ${totalCaixa.toFixed(2)}`;
+            document.getElementById('indicador-clientes').innerText = totalClientes;
+
+            // Adiciona a linha na tabela de vendas
+            const tabelaCaixa = document.getElementById('tabela-caixa').getElementsByTagName('tbody')[0];
+            const novaLinha = tabelaCaixa.insertRow();
+
+            novaLinha.innerHTML = `
+                <td>${cliente}</td>
+                <td>${nomePeca}</td>
+                <td>${qtd}</td>
+                <td><strong>R$ ${valorTotalVenda.toFixed(2)}</strong></td>
+            `;
+
+            // Limpa o campo cliente
+            document.getElementById('venda-cliente').value = "";
+            document.getElementById('venda-qtd').value = "1";
+            alert("Venda realizada com sucesso!");
+        }
+
+        // Função para Cadastrar Nova Peça no Estoque
+        function cadastrarPeca() {
+            const codigo = document.getElementById('cad-codigo').value.trim();
+            const nome = document.getElementById('cad-nome').value.trim();
+            const qtd = document.getElementById('cad-qtd').value;
+            const custo = parseFloat(document.getElementById('cad-custo').value);
+            const venda = parseFloat(document.getElementById('cad-venda').value);
+
+            if (codigo === "" || nome === "" || !qtd || isNaN(custo) || isNaN(venda)) {
+                alert("Preencha todos os campos do cadastro de peça corretamente.");
